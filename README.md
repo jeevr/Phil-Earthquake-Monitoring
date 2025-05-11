@@ -13,7 +13,7 @@ This project aims to have a monitoring tool using **Power BI** to visualize the 
 - Azure Synapse Analytics (Analystics Data)
 - Power BI (Visualization)
 
-![alt text](assets\project_model.png)
+![alt text](documents\project_model.png)
 
 ---
 
