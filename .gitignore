@@ -1,0 +1,24 @@
+
+# Ignore Specific files, regardless of folder structure
+**/azure_config.json
+**/db_config.json
+MyVirtualMachine.rdp
+VizApp.pbix
+
+
+# Ignore Folders
+Web Scraper/pheq_env/
+Web Scraper/logs/
+Web Scraper/scraped_data/
+documents/
+assets/
+
+
+# Python
+__pycache__/
+*.pyc 
+
+
+# VS Code
+.vscode/
+
