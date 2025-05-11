@@ -49,15 +49,32 @@ Root Repository
 
 </code></pre>
 
----
-
-## Web Scraper
-
-
 --- 
 
-## Azure Data Pipeline
+## Microsoft Azure Cloud Services
 
+### 1. Azure Virtual Machine
+> The virtual machine is used to deploy the web scaper of this app.
+
+### 2. Azure Data Lake Gen2
+> The Data Lake is where the raw data are stored. Inlcuding the scraped data from the web scraper.
+
+![alt text](documents/azure_data_lake.png)
+
+
+
+### 3. Azure Data Factory
+> Is used for data ingestion which fetch data from Azure Data Lake and dumps the raw data into Azure SQL Database
+
+### 4. Azure SQL Database
+> Stores data which where dumped by the Azure Data Factory
+
+### 5. Azure Databrics
+> Further data processing and transformation and dumps back the transformed data into Azure SQL Database.
+
+### 6. Azure Synapse Analytics
+
+### 7. Power BI
 
 ---
 
