@@ -20,6 +20,7 @@ This project aims to have a monitoring tool using **Power BI** to visualize the 
 
 
 ## 📂 Folder Structure
+<pre><code>
 pyAppOne
 ├── main.py
 ├── home_page.py
@@ -50,6 +51,8 @@ pyAppOne
 - app_functions
     - database
     - utils
+</code></pre>
+
 - config
 - styles
 
