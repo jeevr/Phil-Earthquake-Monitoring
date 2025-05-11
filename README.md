@@ -20,32 +20,34 @@
 
 ## 📂 App Folder Structure
 <pre><code>
-Repository
-├── main.py
+Root Repository
+│
 ├── Database Script
-│   └── database
-│   │       ├── __init__.py
-│   │       ├── db_manager.py
-│   │       └── queries.py
-│   └── utils
-│       ├── __init__.py
-│       └── populate_table_widgets.py
+│       ├── database
+│       │       ├── __init__.py
+│       │       ├── db_manager.py
+│       │       └── queries.py
+│       └── utils
+│               ├── __init__.py
+│               └── populate_table_widgets.py
+│
 ├── Web Scraper
-│   ├── main.py          ← global styles
-│   ├── requirements.txt      ← optional page override
-│   ├── 
-│   └── page_two.qss
-├── requirements.txt
+│       ├── main.py                     ← main app
+│       ├── requirements.txt            ← python dependencies
+│       ├── modules
+│       │       ├── __init__.py
+│       │       ├── DBConnect.py
+│       │       ├── Logger.py
+│       │       ├── Azure.py
+│       │       ├── db_config.json      ← database credentials (hidden)
+│       │       └── azure_config.json   ← azure cloud secret keys (hidden)
+│       └── logs                        ← log files (.txt files)
+│
+├── documents
+│                        
 └── README.md
 
-- app_functions
-    - database
-    - utils
 </code></pre>
-
-- config
-- styles
-
 
 ---
 
