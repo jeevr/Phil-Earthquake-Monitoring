@@ -52,22 +52,42 @@ Root Repository
 --- 
 
 ## Microsoft Azure Cloud Services
+- Resource Group
+![alt text](documents/resouce_group.png)
 
 ### 1. Azure Virtual Machine
-> The virtual machine is used to deploy the web scaper of this app.
+The virtual machine is used to deploy the web scaper of this app.
+![alt text](documents/vm.png)
+- #### Web Scraper
+    The web sraper is built using Python language.
+    - **Purpose:** Scrape data from this url ``https://earthquake.phivolcs.dost.gov.ph/`` for the Earthquake data points which occurs daily
+    - **Deployed Scraping Frequency:** Daily
+    - **VM Specs (Size):** Standard B4ms (4 vcpus, 16 GiB memory)
+    - **VM Specs (OS):** Windows
+    - **Output :** CSV file of the scraped data
+    
+
 
 ### 2. Azure Data Lake Gen2
-> The Data Lake is where the raw data are stored. Inlcuding the scraped data from the web scraper.
+The Data Lake is where the raw data are stored. Inlcuding the scraped data from the web scraper.
 
 ![alt text](documents/azure_data_lake.png)
 
 
-
 ### 3. Azure Data Factory
-> Is used for data ingestion which fetch data from Azure Data Lake and dumps the raw data into Azure SQL Database
+Is used for data ingestion which fetch data from Azure Data Lake and dumps the raw data into Azure SQL Database.
+
+- Reads raw data from Azure Data Lake container ``scraped-data``
+- Identifies which records are not yet in the SQL Database
+- Dumps the identified data into Azure SQL Database
+- Moves the raw data into ``scraped-data-archive``
+
 
 ### 4. Azure SQL Database
-> Stores data which where dumped by the Azure Data Factory
+Stores data which where dumped by the Azure Data Factory
+- ### Initial Set-up
+    - Create Table
+
 
 ### 5. Azure Databrics
 > Further data processing and transformation and dumps back the transformed data into Azure SQL Database.
