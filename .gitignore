@@ -2,6 +2,7 @@
 # Ignore Specific files, regardless of folder structure
 **/azure_config.json
 **/db_config.json
+**/notes.txt
 MyVirtualMachine.rdp
 VizApp.pbix
 
