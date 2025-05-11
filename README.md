@@ -21,12 +21,9 @@ This project aims to have a monitoring tool using **Power BI** to visualize the 
 
 ## 📂 Folder Structure
 <pre><code>
-pyAppOne
+Repository
 ├── main.py
-├── home_page.py
-├── page_one.py
-├── page_two.py
-├── app_functions
+├── Database Script
 │   └── database
 │   │       ├── __init__.py
 │   │       ├── db_manager.py
@@ -34,16 +31,10 @@ pyAppOne
 │   └── utils
 │       ├── __init__.py
 │       └── populate_table_widgets.py
-├── config
-│   └── db_config.json
-├── ui
-│   ├── home_page_ui.py
-│   ├── page_one_ui.py
-│   └── page_two_ui.py
-├── styles
-│   ├── style.qss          ← global styles
-│   ├── home_page.qss      ← optional page override
-│   ├── page_one.qss
+├── Web Scraper
+│   ├── main.py          ← global styles
+│   ├── requirements.txt      ← optional page override
+│   ├── 
 │   └── page_two.qss
 ├── requirements.txt
 └── README.md
