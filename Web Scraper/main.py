@@ -10,20 +10,14 @@ import requests
 from bs4 import BeautifulSoup
 import warnings
 import re
+from datetime import datetime, timedelta
 import json
-# import logging
-# from datetime import datetime
+
 
 # custom modules import
 from modules.Logger import Logger
 from modules.DBConnect import DBConnect # 0.1
 from modules.Azure import Azure
-
-
-# # Automatically downloads correct driver for installed browser
-# edge_service = Service(EdgeChromiumDriverManager().install())
-# edge_options = Options()
-
 
 
 def initialize_scrapper(url, logger):
@@ -166,7 +160,23 @@ def clean_summary_data(scraped_data, logger):
         # Rearranging the columns
         df = df[['date_time', 'date', 'time', 'latitude', 'longitude', 'depth_km', 'depth_km_symbol', 'magnitude', 'location', 'hlink']]
 
-        return data_month, data_year, df
+        # Get the first row's datetime
+        first_row = df.iloc[0]
+
+        # Extract date and time values
+        date_value = pd.to_datetime(first_row['date']).date()
+        time_value = pd.to_datetime(first_row['time']).time()
+        
+        print("Date:", date_value)
+        print("Time:", time_value)
+
+        # Combine date and time
+        combined_datetime = datetime.combine(date_value, time_value)
+        latest_datetime = combined_datetime.strftime('%Y-%m-%d_%H%M')
+        print(latest_datetime)
+        
+        
+        return latest_datetime, df
 
     except Exception as e:
         logger.log_message("Failed to clean data", level='exception')
@@ -230,44 +240,57 @@ def dump_to_database(df_data, logger):
 
 
 if __name__ == '__main__':
-
-    # Suppress all warnings
-    warnings.filterwarnings("ignore")
-
-    url = 'https://earthquake.phivolcs.dost.gov.ph/'
-    # url = 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_September.html'
-
-    logger = Logger()  # Initialize the logger instance
-
-    # Scrape for the Main Page (Summary)
-    browser = initialize_scrapper(url, logger)
-    scraped_data = scrape_summary_data(browser, logger)
-    data_month, data_year, df_final = clean_summary_data(scraped_data, logger)
+    # Initialize the logger instance
+    logger = Logger()  
+    app_start_time = time.time()
+    logger.log_message("Application started")
     
-    # Scrape for the Detailed Report
-        # read csv (dummy)
-        # df_final = pd.read_csv('scraped_data/earthquake_data_october_2024.csv')
-    df_final_with_details = scrape_detail_data(df_final, logger)
+    try:
+        # Suppress all warnings
+        warnings.filterwarnings("ignore")
+
+        url = 'https://earthquake.phivolcs.dost.gov.ph/'
+        # url = 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_September.html'
+
+        
+        # Scrape for the Main Page (Summary)
+        browser = initialize_scrapper(url, logger)
+        scraped_data = scrape_summary_data(browser, logger)
+        latest_datetime, df_final = clean_summary_data(scraped_data, logger)
+        
+        # Scrape for the Detailed Report
+            # read csv (dummy)
+            # df_final = pd.read_csv('scraped_data/earthquake_data_october_2024.csv')
+        df_final_with_details = scrape_detail_data(df_final, logger)
 
 
-    # # dumping to database
-    # dump_to_database(df_final_with_details, logger)
-    
-    # print('\n')
-    # print(df_final_with_details)
+        # # dumping to database
+        # dump_to_database(df_final_with_details, logger)
+        
+        # print('\n')
+        # print(df_final_with_details)
 
-    # Save the DataFrame to a CSV file
-    csv_file_name = f'earthquake_data_{data_month.lower()}_{data_year.lower()}.csv'
-    print("-> csv_file_name: ", csv_file_name)
-    csv_file_path = f'scraped_data/{csv_file_name}'
-    print("-> csv_file_path: ", csv_file_path)
-    df_final_with_details.to_csv(csv_file_path, index=False)
+        # Save the DataFrame to a CSV file
+        csv_file_name = f'earthquake_data_{latest_datetime}.csv'
+        print("-> csv_file_name: ", csv_file_name)
+        csv_file_path = f'scraped_data/{csv_file_name}'
+        print("-> csv_file_path: ", csv_file_path)
+        df_final_with_details.to_csv(csv_file_path, index=False)
 
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    # print("-> current_dir: ", current_dir)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        # print("-> current_dir: ", current_dir)
 
-    logger.log_message(f"-> current_dir: {current_dir}")
-    logger.log_message(f"-> csv_file_name: {csv_file_name}")
+        logger.log_message(f"-> current_dir: {current_dir}")
+        logger.log_message(f"-> csv_file_name: {csv_file_name}")
 
-    azure = Azure(logger)
-    azure.upload_data_to_blob_storage(os.path.join(current_dir, 'scraped_data'), csv_file_name)
+        azure = Azure(logger)
+        azure.upload_data_to_blob_storage(os.path.join(current_dir, 'scraped_data'), csv_file_name)
+
+    except Exception as e:
+        logger.log_message(f"Scraper encountered an Error: {e}", level='exception')
+        
+    finally:
+        app_end_time = time.time()
+        elapsed_runtime = timedelta(seconds=int(app_end_time - app_start_time))
+        logger.log_message("Application Finished")
+        logger.log_message(f"Total runtime: {elapsed_runtime}")
