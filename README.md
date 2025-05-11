@@ -1,25 +1,24 @@
 # 🚀 Philippine Earthquake Monitoring
 
-This project aims to have a monitoring tool using **Power BI** to visualize the old and recent earthquakes in the Philippines.
+> This project aims to have a monitoring tool using **Power BI** to visualize the previous and recent earthquakes in the Philippines.
 
 ---
-## ✨ Tech Stack (Services) used to Build this Tool
-
-- Azure Storage (Raw Data Storage)
-- Azure Virtual Machine (web Scraper)
-- Azure Data Factory (Ingestion)
-- Azure SQL Database (Structured Data Storage)
-- Azure Databrics (Data Transformation)
-- Azure Synapse Analytics (Analystics Data)
-- Power BI (Visualization)
+## ✨ Tech Stack (Services) used in Build this Tool
+- **Python** (Web Scraper & Geo Data Processing)
+- **Azure Storage** (Raw Data Storage)
+- **Azure Virtual Machine** (Deployed Web Scraper Environment)
+- **Azure Data Factory** (Ingestion)
+- **Azure SQL Database** (Structured Data Storage)
+- **Azure Databrics** (Data Transformation)
+- **Azure Synapse Analytics** (Analystics Data)
+- **Power BI** (Visualization)
 
 ![alt text](documents/project_model.png)
 
 ---
 
 
-
-## 📂 Folder Structure
+## 📂 App Folder Structure
 <pre><code>
 Repository
 ├── main.py
