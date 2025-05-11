@@ -10,7 +10,7 @@ VizApp.pbix
 Web Scraper/pheq_env/
 Web Scraper/logs/
 Web Scraper/scraped_data/
-documents/
+# documents/
 assets/
 
 
