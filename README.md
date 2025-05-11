@@ -48,10 +48,19 @@ Repository
 - styles
 
 
+---
+
+## Web Scraper
+
+
+--- 
+
+## Azure Data Pipeline
+
 
 ---
 
-## 🔧 Setup Instructions
+## 🔧 Clone Repository
 
 ### 1. Virtual Environment
 > **Command Prompt** 
