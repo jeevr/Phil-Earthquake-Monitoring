@@ -1,4 +1,7 @@
 import os
+from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 import selenium.webdriver as webdriver
 from selenium.webdriver.edge.service import Service
 from selenium.webdriver.edge.options import Options
@@ -58,73 +61,59 @@ def scrape_summary_data(browser, logger):
         list: A list of lists containing the scraped data along with hyperlinks.
     """
     try:
-        tbody = browser.find_element(By.XPATH, '/html/body/div/table[3]/tbody')  # XPath of specific table in webpage
+        # Wait for the table body to load
+        tbody = WebDriverWait(browser, 10).until(
+            EC.presence_of_element_located((By.XPATH, '/html/body/div/table[3]/tbody'))
+        )
         data = []
 
-        for tr in tbody.find_elements(By.XPATH, '//tr'):  # Use './tr' to avoid searching all tr elements in the document
-            row = []
-            for td in tr.find_elements(By.XPATH, './/td'):  # Iterate through each cell in the row
-                # Check for hyperlink in the cell
-                a_element = td.find_element(By.TAG_NAME, 'a') if td.find_elements(By.TAG_NAME, 'a') else None
-                if a_element:
-                    # If a hyperlink is found, append its text and href to the row
-                    row.append(a_element.text)
-                    row.append(a_element.get_attribute('href'))
-                    # row.append(a_element.text, a_element.get_attribute('href'))
-                    
-                else:
-                    # Append the text if there's no hyperlink
-                    row.append(td.text)
-            data.append(row)
+        # Use './tr' instead of '//tr' to scope to just tbody
+        rows = tbody.find_elements(By.XPATH, './tr')
+
+        for row_index, tr in enumerate(rows):
+            try:
+                row_data = []
+                tds = tr.find_elements(By.XPATH, './td')
+
+                for td_index, td in enumerate(tds):
+                    try:
+                        a_elements = td.find_elements(By.TAG_NAME, 'a')
+                        if a_elements:
+                            # Append hyperlink text and URL
+                            row_data.append(a_elements[0].text)
+                            row_data.append(a_elements[0].get_attribute('href'))
+                        else:
+                            row_data.append(td.text)
+                    except StaleElementReferenceException:
+                        logger.log_message(f"Stale element at row {row_index}, column {td_index}. Retrying...", level='warning')
+                        tds = tr.find_elements(By.XPATH, './td')  # Re-fetch the row cells
+                        td = tds[td_index]
+                        row_data.append(td.text)
+
+                data.append(row_data)
+
+                
+                
+            except Exception as row_error:
+                logger.log_message(f"Error processing row {row_index}: {row_error}", level='warning')
 
         logger.log_message("Data scraped successfully", level='info')
+        logger.log_message(f"data: {data}", level='debug')
+        
         return data
 
     except Exception as e:
         logger.log_message(f"Failed to scrape data: {e}", level='exception')
         return []
 
-
 def clean_summary_data(scraped_data, logger):
     try:
-        # ====================================
-        # get key headers of the data
-        # ====================================
-        # print(scraped_data)
-
-        data_month_year = scraped_data[1][0]
-
-        logger.log_message(data_month_year)
-
-        # Ensure there's a space to split on
-        data_month_year_parts = data_month_year.split(' ')
-        
-        data_month, data_year = data_month_year_parts
-
-        logger.log_message(f"Month: {data_month}", level='debug')
-        logger.log_message(f"Year: {data_year}", level='debug')
-
-        data_removed_empty = [entry for entry in scraped_data if entry]  # Remove empty lists
-
-        # ====================================
-        # find where the actual data ended
-        # ====================================
-        idx_row = 0
-        end_row = 0
-        for row in data_removed_empty:
-            if row[0] == data_year:
-                end_row = idx_row
-            
-            idx_row += 1
-
+   
         # ====================================
         # apply final filtering of array
         # ====================================
 
-        final_array = data_removed_empty[2:end_row]  # 2 - start value based on the actual data
-
-        # print('\n')
-        # print(final_array)    
+        final_array =[row for row in scraped_data if row]
 
         # Define headers
         df_headers = ['date_time', 'hlink', 'latitude', 'longitude', 'depth_km', 'magnitude', 'location']
@@ -247,7 +236,7 @@ if __name__ == '__main__':
     logger.log_message("Application started")
     
     # SET THIS VARIABLE
-    scraping_method = 'manual_bulk' # {daily, manual_bulk}
+    scraping_method = 'daily' # {daily, manual_bulk}
     
     
     if scraping_method == 'daily':
@@ -257,8 +246,8 @@ if __name__ == '__main__':
         url_list = [
             'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_January.html'
             ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_February.html'
-            # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_March.html'
-            # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_April.html'
+            ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_March.html'
+            ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_April.html'
         ]
 
     
