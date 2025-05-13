@@ -62,17 +62,14 @@
 			}
 		],
 		"parameters": {
-			"year": {
-				"type": "string",
-				"defaultValue": "2024"
+			"plineparam_year": {
+				"type": "string"
 			},
-			"month": {
-				"type": "string",
-				"defaultValue": "01"
+			"plineparam_month": {
+				"type": "string"
 			},
-			"blob_layer": {
-				"type": "string",
-				"defaultValue": "bronze"
+			"plineparam_blob_layer": {
+				"type": "string"
 			}
 		},
 		"annotations": []
