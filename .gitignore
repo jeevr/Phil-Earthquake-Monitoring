@@ -15,7 +15,7 @@ Web Scraper/scraped_data/*
 !Web Scraper/scraped_data/.gitkeep
 # documents/
 assets/
-
+_misc/
 
 # Python
 __pycache__/
