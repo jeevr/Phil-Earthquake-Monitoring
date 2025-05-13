@@ -5,6 +5,12 @@
 			"referenceName": "AzureBlobStorage_Input",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"pinput_year": {
+				"type": "string",
+				"defaultValue": "2024"
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {

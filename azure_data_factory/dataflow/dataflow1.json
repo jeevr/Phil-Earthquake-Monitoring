@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "CSVInput",
+						"referenceName": "test_input",
 						"type": "DatasetReference"
 					},
 					"name": "source1"
@@ -19,7 +19,20 @@
 				"     param_year as string ('2024'),",
 				"     param_month as string ('01')",
 				"}",
-				"source(allowSchemaDrift: true,",
+				"source(output(",
+				"          date_time as string,",
+				"          date as string,",
+				"          time as string,",
+				"          latitude as string,",
+				"          longitude as string,",
+				"          depth_km as string,",
+				"          depth_km_symbol as string,",
+				"          magnitude as string,",
+				"          location as string,",
+				"          hlink as string,",
+				"          details as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     wildcardPaths:[(concat(\r",
