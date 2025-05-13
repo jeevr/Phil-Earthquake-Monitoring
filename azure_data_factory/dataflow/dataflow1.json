@@ -9,11 +9,23 @@
 						"referenceName": "test_input",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "inputCSV"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "test_output",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filterday01"
+				}
+			],
 			"scriptLines": [
 				"parameters{",
 				"     param_year as string ('2024'),",
@@ -35,13 +47,12 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     wildcardPaths:[(concat(\r",
-				"    'bronze/scraped-data/',\r",
-				"    'year=',$param_year,\r",
-				"    '/',\r",
-				"    'month=',$param_month\r",
-				"))],",
-				"     partitionBy('hash', 1)) ~> source1"
+				"     partitionBy('hash', 1)) ~> inputCSV",
+				"inputCSV filter(equals(toDate(date),toDate('2024-01-31'))) ~> filterday01",
+				"filterday01 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
