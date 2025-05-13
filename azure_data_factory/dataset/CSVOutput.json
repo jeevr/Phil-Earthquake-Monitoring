@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"folderPath": "silver/scraped-data-segregated/year=2024/month=01/day-01",
 				"container": "earth-quake-data"
 			},
 			"columnDelimiter": ",",
