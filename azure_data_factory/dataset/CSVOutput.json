@@ -1,0 +1,75 @@
+{
+	"name": "CSVOutput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage_Ouput",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "earth-quake-data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "date_time",
+				"type": "String"
+			},
+			{
+				"name": "date",
+				"type": "String"
+			},
+			{
+				"name": "time",
+				"type": "String"
+			},
+			{
+				"name": "latitude",
+				"type": "String"
+			},
+			{
+				"name": "longitude",
+				"type": "String"
+			},
+			{
+				"name": "depth_km",
+				"type": "String"
+			},
+			{
+				"name": "depth_km_symbol",
+				"type": "String"
+			},
+			{
+				"name": "magnitude",
+				"type": "String"
+			},
+			{
+				"name": "location",
+				"type": "String"
+			},
+			{
+				"name": "hlink",
+				"type": "String"
+			},
+			{
+				"name": "details",
+				"type": "String"
+			},
+			{
+				"name": "year",
+				"type": "String"
+			},
+			{
+				"name": "month",
+				"type": "String"
+			}
+		]
+	}
+}
