@@ -1,0 +1,20 @@
+{
+	"name": "pipeline2",
+	"properties": {
+		"parameters": {
+			"year": {
+				"type": "string",
+				"defaultValue": "2024"
+			},
+			"month": {
+				"type": "string",
+				"defaultValue": "01"
+			},
+			"blob_layer": {
+				"type": "string",
+				"defaultValue": "bronze"
+			}
+		},
+		"annotations": []
+	}
+}
