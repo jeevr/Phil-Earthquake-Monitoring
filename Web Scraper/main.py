@@ -282,16 +282,16 @@ if __name__ == '__main__':
 
         if scraping_method == 'manual_bulk':
             url_list = [
-                'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_January.html'
+                # 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_January.html'
                 # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_February.html'
                 # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_March.html'
                 # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_April.html'
                 # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_May.html'
                 # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_June.html'
                 
-                # 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_July.html'
-                # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_August.html'
-                # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_September.html'
+                'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_July.html'
+                ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_August.html'
+                ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_September.html'
                 
                 # 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_October.html'
                 # 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_November.html'
