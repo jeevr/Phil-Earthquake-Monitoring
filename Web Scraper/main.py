@@ -182,15 +182,13 @@ def scrape_detail_data(df_data, logger):
         logger.log_message(f"Getting Scraped Details per Data Point.")
         
         def get_details(link):
-            # print(link)
-            # Send a request to fetch the content of the webpage, disabling SSL verification
-            response = requests.get(link, verify=False)  # 'verify=False' disables SSL certificate check
             
-            # placeholder
-            cleaned_text = ''
-            
-            # If the request is successful (status code 200)
-            if response.status_code == 200:
+            try:
+                # print(link)
+                # Send a request to fetch the content of the webpage, disabling SSL verification
+                response = requests.get(link, timeout=10, verify=False)  # 'verify=False' disables SSL certificate check
+                response.raise_for_status()
+                
                 # Parse the content using BeautifulSoup
                 soup = BeautifulSoup(response.content, 'html.parser')
                 
@@ -200,22 +198,23 @@ def scrape_detail_data(df_data, logger):
                 # Use regular expression to replace multiple whitespace characters (spaces, newlines, tabs) with a single space
                 cleaned_text = re.sub(r'\s+', ' ', text_content).strip()
 
-            else:
-                cleaned_text = '--- UNABLE TO RETRIEVE DATA FROM URL ---'
-                
-                logger.log_message(f"Failed to retrieve the link: {link}. Status code: {response.status_code}", "warning")
-
-            return cleaned_text
-        
+                return cleaned_text
+            
+            except requests.exceptions.RequestException as req_err:
+                logger.log_message(f"Warning: Request failed for {link} - {req_err}", level='warning')
+                return "--- REQUEST FAILED ---"
+            
+            except Exception as e:
+                logger.log_message(f"Warning: Unexpected error for {link} - {e}", level='warning')
+                return "--- ERROR PROCESSING LINK ---"
             
         df_data['details'] = df_data['hlink'].apply(get_details)
-    
-        
+
         return df_data
 
     except Exception as e:
         logger.log_message(f"Failed to scrape data: {e}", level='exception')
-        return []
+        return df_data  # return partially processed dataframe instead of empty list
 
 
 
@@ -268,9 +267,10 @@ def get_current_file_dir():
 if __name__ == '__main__':
     # Initialize the logger instance
     logger = Logger()  
+    app_start_time = time.time()
     
     try:
-        app_start_time = time.time()
+        
         logger.log_message("Application started")
         
         # SET THIS VARIABLE
@@ -283,12 +283,22 @@ if __name__ == '__main__':
         if scraping_method == 'manual_bulk':
             url_list = [
                 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_January.html'
-                ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_February.html'
-                ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_March.html'
-                ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_April.html'
-                ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_May.html'
-                ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_June.html'
+                # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_February.html'
+                # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_March.html'
+                # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_April.html'
+                # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_May.html'
+                # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_June.html'
                 
+                # 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_July.html'
+                # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_August.html'
+                # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_September.html'
+                
+                # 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_October.html'
+                # 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_November.html'
+                # 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_December.html'
+                
+                    
+                    
                 # 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_January.html'
                 # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_February.html'
                 # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_March.html'
@@ -349,9 +359,9 @@ if __name__ == '__main__':
         logger.log_message(f"Error occurred: {e}", "exception")
         
     finally:
-        log_path = logger.finalize_log()
-        print(f"Log saved at: {log_path}")
         app_end_time = time.time()
         elapsed_runtime = timedelta(seconds=int(app_end_time - app_start_time))
         logger.log_message("Application Finished")
         logger.log_message(f"Total runtime: {elapsed_runtime}")
+        log_path = logger.finalize_log()
+        print(f"Log saved at: {log_path}")
