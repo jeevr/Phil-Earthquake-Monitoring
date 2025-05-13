@@ -1,9 +1,0 @@
-{
-	"name": "adf-phil-earthquake",
-	"location": "southeastasia",
-	"identity": {
-		"type": "SystemAssigned",
-		"principalId": "0cd910f9-4045-470e-94d9-e22c6bc17cc0",
-		"tenantId": "af04216f-ae8e-4d15-864b-817ba0479575"
-	}
-}
