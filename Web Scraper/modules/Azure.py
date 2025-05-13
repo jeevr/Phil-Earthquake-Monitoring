@@ -48,23 +48,31 @@ class Azure:
 
             file_path = os.path.join(folder_path, file)
 
+            # Define virtual blob path (including folders if needed)
+            blob_path = os.path.join(folder_path, file).replace("\\", "/")  # Normalize for URL path
+        
             with open(file_path, "rb") as data:
-                container_client.upload_blob(file, data, overwrite=True)
+                container_client.upload_blob(name=blob_path, data=data, overwrite=True)
 
+            if self.logger:
+                self.logger.log_message(f"Uploaded '{file}' to container path: '{blob_path}'")
+            
         except Exception as e:
             if self.logger is not None: # to avoid dependency error
                 self.logger.log_message(f"Failed to upload to Azure Blob: {e}", level='exception')
-            
-
-
-# if __name__ == '__main__':
-#     # for testing only
-#     local_folder = r'Z:\Projects\Phil-Earthquake-Monitoring\Web Scraper\scraped_data'
-#     file = 'earthquake_data_may_2025.csv'
-#     azure = Azure()
     
-#     print(azure.storage_acct_name)
-#     print(azure.storage_acct_key)
-#     print(azure.connection_string)
-#     print(azure.container_name)
-#     azure.upload_data_to_blob_storage(local_folder, file)
+        
+    
+if __name__ == '__main__':
+    # for testing only
+    local_folder = r'Z:\Projects\Phil-Earthquake-Monitoring\Web Scraper\scraped_data'
+    file = 'earthquake_data_may_2025.csv'
+    azure = Azure()
+    
+    print(azure.storage_acct_name)
+    print(azure.storage_acct_key)
+    print(azure.connection_string)
+    print(azure.container_name)
+    
+    
+    azure.upload_data_to_blob_storage(local_folder, file)
