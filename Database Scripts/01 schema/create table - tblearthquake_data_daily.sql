@@ -9,25 +9,26 @@ ORDER BY name;
 
 
 
--- drop table if exists tblearthquake_data_daily
+drop table if exists raw.tblearthquake_data_daily;
 create table raw.tblearthquake_data_daily (
-    date_time varchar,
-    date varchar,
-    time varchar,
-    latitude varchar,
-    longitude varchar,
-    depth_km varchar,
-    depth_km_symbol varchar,
-    magnitude varchar,
-    location varchar,
-    hlink varchar,
-    details varchar
+    date_time varchar(max),
+    date varchar(max),
+    time varchar(max),
+    latitude varchar(max),
+    longitude varchar(max),
+    depth_km varchar(max),
+    depth_km_symbol varchar(max),
+    magnitude varchar(max),
+    location varchar(max),
+    hlink varchar(max),
+    details varchar(max)
 );
 
 
 select *
 from raw.tblearthquake_data_daily
 
+truncate table raw.tblearthquake_data_daily
 
 
 -- drop table if exists tblearthquake_data_daily

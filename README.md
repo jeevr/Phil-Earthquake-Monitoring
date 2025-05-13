@@ -58,7 +58,8 @@ Root Repository
 ### 1. Azure Virtual Machine
 The virtual machine is used to deploy the web scaper of this app.
 ![alt text](documents/vm.png)
-- #### Web Scraper
+- #### Web Scraper 🔗 [Wiki](https://github.com/jeevr/Phil-Earthquake-Monitoring/wiki/Web-Scraper)
+
     The web sraper is built using Python language.
     - **Purpose:** Scrape data from this url ``https://earthquake.phivolcs.dost.gov.ph/`` for the Earthquake data points which occurs daily
     - **Deployed Scraping Frequency:** Daily
@@ -77,7 +78,9 @@ The Data Lake is where the raw data are stored. Inlcuding the scraped data from 
 ### 3. Azure Data Factory
 Is used for data ingestion which fetch data from Azure Data Lake and dumps the raw data into Azure SQL Database.
 
-- Reads raw data from Azure Data Lake container ``scraped-data``
+- Reads raw data from Azure Data Lake container ``scraped-data`` which is trigged via ``Event`` in Blob Storage 
+    - **Note:** Make sure your **Event.Grid** is **Registered** under your **Subscription**
+    ![alt text](documents/event_grid.png)
 - Identifies which records are not yet in the SQL Database
 - Dumps the identified data into Azure SQL Database
 - Moves the raw data into ``scraped-data-archive``

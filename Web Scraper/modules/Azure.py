@@ -37,7 +37,7 @@ class Azure:
         except KeyError:
             raise ValueError(f"Parameter key '{param_key}' not found for service '{service_key}'.")
         
-    def upload_data_to_blob_storage(self, folder_path, file):
+    def upload_data_to_blob_storage(self, source_file, blob_folder_path, blob_file_name):
         try:
             if self.logger is not None: # to avoid dependency error
                 self.logger.log_message(f"Uploading to Azure Blob Storage: {self.storage_acct_name}")
@@ -46,25 +46,60 @@ class Azure:
             blob_service_client = BlobServiceClient.from_connection_string(self.connection_string)
             container_client = blob_service_client.get_container_client(self.container_name)          
 
-            file_path = os.path.join(folder_path, file)
+            # source_file = os.path.join(source_folder_path, file)
+            blob_file_path = os.path.join(blob_folder_path, blob_file_name).replace("\\", "/")  # Normalize for URL path
+            
+            print(source_file)
+            print(blob_file_path)
+        
+            with open(source_file, "rb") as data:
+                container_client.upload_blob(name=blob_file_path, data=data, overwrite=True)
+                print(f"Uploaded '{blob_file_name}' to container path: '{blob_file_path}'")
 
-            with open(file_path, "rb") as data:
-                container_client.upload_blob(file, data, overwrite=True)
-
+            if self.logger:
+                self.logger.log_message(f"Uploaded '{blob_file_name}' to container path: '{blob_file_path}'")
+            
         except Exception as e:
             if self.logger is not None: # to avoid dependency error
                 self.logger.log_message(f"Failed to upload to Azure Blob: {e}", level='exception')
             
-
-
+    
+        
+    
 # if __name__ == '__main__':
+#     from datetime import datetime
+    
 #     # for testing only
+#     # sample file date 
+#     date_str = "2024-01-31_2304"
+    
 #     local_folder = r'Z:\Projects\Phil-Earthquake-Monitoring\Web Scraper\scraped_data'
-#     file = 'earthquake_data_may_2025.csv'
+#     file = f'earthquake_data_latest_datapoint_{date_str}.csv'
 #     azure = Azure()
+    
+#     source_file = os.path.join(os.path.join(local_folder, file))
+    
+    
+#     parsed_date = datetime.strptime(date_str, '%Y-%m-%d_%H%M')
+
+#     year = parsed_date.year      
+#     month = parsed_date.month    
+#     day = parsed_date.day         
+#     latest_time = parsed_date.strftime('%H%M')
+    
+#     # 0 padding
+#     year_str = str(year)              
+#     month_str = f"{month:02d}"        
+#     day_str = f"{day:02d}"      
     
 #     print(azure.storage_acct_name)
 #     print(azure.storage_acct_key)
 #     print(azure.connection_string)
 #     print(azure.container_name)
-#     azure.upload_data_to_blob_storage(local_folder, file)
+    
+    
+#     blob_root_fodler = 'bronze'
+#     blob_folder_path = f'{blob_root_fodler}/year={year_str}/month={month_str}/day={day_str}/'
+#     blob_file_name = f'earthquake_data_latest_datapoint_{latest_time}.csv'
+    
+#     azure.upload_data_to_blob_storage(source_file, blob_folder_path, blob_file_name)
