@@ -1,0 +1,35 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CSVInput",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"parameters{",
+				"     param_year as string ('2024'),",
+				"     param_month as string ('01')",
+				"}",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     wildcardPaths:[(concat(\r",
+				"    'bronze/scraped-data/',\r",
+				"    'year=',$param_year,\r",
+				"    '/',\r",
+				"    'month=',$param_month\r",
+				"))],",
+				"     partitionBy('hash', 1)) ~> source1"
+			]
+		}
+	}
+}

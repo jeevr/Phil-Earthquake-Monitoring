@@ -21,7 +21,7 @@
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": true,
 							"wildcardFolderPath": {
-								"value": "@concat('year=','/',pipeline().parameters.plineparam_year,'month=',pipeline().parameters.plineparam_month)",
+								"value": "@concat(\n    'bronze/scraped-data/',\n    'year=',pipeline().parameters.plineparam_year,\n    '/',\n    'month=',pipeline().parameters.plineparam_month\n)",
 								"type": "Expression"
 							},
 							"wildcardFileName": "*",
