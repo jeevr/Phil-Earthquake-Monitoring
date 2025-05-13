@@ -136,7 +136,8 @@ def clean_summary_data(scraped_data, logger):
         df[['date', 'time']] = df['date_time'].str.split(' - ', expand=True)
 
         # Convert the 'date' column to datetime format
-        df['date'] = pd.to_datetime(df['date'], format='%d %B %Y')
+        # df['date'] = pd.to_datetime(df['date'], format='%d %B %Y') # old version
+        df['date'] = pd.to_datetime(df['date'], format='mixed', dayfirst=True, errors='coerce') # fix for mix format
 
         # Convert the 'time' column to datetime format (24-hour format)
         df['time'] = pd.to_datetime(df['time'], format='%I:%M %p').dt.strftime('%H:%M:%S')
@@ -162,11 +163,13 @@ def clean_summary_data(scraped_data, logger):
 
         # Combine date and time
         combined_datetime = datetime.combine(date_value, time_value)
+        latest_date = combined_datetime.strftime('%Y-%m-%d')
+        latest_time = combined_datetime.strftime('%H%M')
         latest_datetime = combined_datetime.strftime('%Y-%m-%d_%H%M')
         # print(latest_datetime)
         
         
-        return latest_datetime, df
+        return latest_date, latest_time, latest_datetime, df
 
     except Exception as e:
         logger.log_message("Failed to clean data", level='exception')
@@ -176,11 +179,16 @@ def scrape_detail_data(df_data, logger):
     try:
         print(df_data)
         
+        logger.log_message(f"Getting Scraped Details per Data Point.")
+        
         def get_details(link):
-            print(link)
+            # print(link)
             # Send a request to fetch the content of the webpage, disabling SSL verification
             response = requests.get(link, verify=False)  # 'verify=False' disables SSL certificate check
-
+            
+            # placeholder
+            cleaned_text = ''
+            
             # If the request is successful (status code 200)
             if response.status_code == 200:
                 # Parse the content using BeautifulSoup
@@ -192,15 +200,19 @@ def scrape_detail_data(df_data, logger):
                 # Use regular expression to replace multiple whitespace characters (spaces, newlines, tabs) with a single space
                 cleaned_text = re.sub(r'\s+', ' ', text_content).strip()
 
-                return cleaned_text
             else:
-                print(f"Failed to retrieve the page. Status code: {response.status_code}")
+                cleaned_text = '--- UNABLE TO RETRIEVE DATA FROM URL ---'
+                
+                logger.log_message(f"Failed to retrieve the link: {link}. Status code: {response.status_code}", "warning")
 
+            return cleaned_text
         
+            
         df_data['details'] = df_data['hlink'].apply(get_details)
+    
         
         return df_data
-    
+
     except Exception as e:
         logger.log_message(f"Failed to scrape data: {e}", level='exception')
         return []
@@ -228,80 +240,117 @@ def dump_to_database(df_data, logger):
         # pass
 
 
+def generate_blob_folder_path(file_date):
+    parsed_date = datetime.strptime(file_date, '%Y-%m-%d')
+    
+    # explode date parts
+    year = parsed_date.year      
+    month = parsed_date.month    
+    day = parsed_date.day
+    
+    # 0 padding
+    year_str = str(year)              
+    month_str = f"{month:02d}"        
+    # day_str = f"{day:02d}"          
+    
+    # folder path for blob storage
+    blob_root_fodler = 'bronze'
+    blob_sub_dir = 'scraped-data'
+    # blob_folder_path = f'{blob_root_fodler}/{blob_sub_dir}/year={year_str}/month={month_str}/day={day_str}/'
+    blob_folder_path = f'{blob_root_fodler}/{blob_sub_dir}/year={year_str}/month={month_str}/'
+    
+    return blob_folder_path
+
+
+def get_current_file_dir():
+    return os.path.dirname(os.path.abspath(__file__))
 
 if __name__ == '__main__':
     # Initialize the logger instance
     logger = Logger()  
-    app_start_time = time.time()
-    logger.log_message("Application started")
-    
-    # SET THIS VARIABLE
-    scraping_method = 'daily' # {daily, manual_bulk}
-    
-    
-    if scraping_method == 'daily':
-        url_list = ['https://earthquake.phivolcs.dost.gov.ph/']
-
-    if scraping_method == 'manual_bulk':
-        url_list = [
-            'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_January.html'
-            ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_February.html'
-            ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_March.html'
-            ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_April.html'
-        ]
-
-    
-    logger.log_message(f'Scraping Method: {scraping_method}')
     
     try:
+        app_start_time = time.time()
+        logger.log_message("Application started")
+        
+        # SET THIS VARIABLE
+        scraping_method = 'manual_bulk' # {daily, manual_bulk}
         
         
-        for url in url_list:
-            
-            logger.log_message(f'Scraping for Url: {url}')
+        if scraping_method == 'daily':
+            url_list = ['https://earthquake.phivolcs.dost.gov.ph/']
+
+        if scraping_method == 'manual_bulk':
+            url_list = [
+                'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_January.html'
+                ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_February.html'
+                ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_March.html'
+                ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_April.html'
+                ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_May.html'
+                ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2024/2024_June.html'
                 
-            # Suppress all warnings
-            warnings.filterwarnings("ignore")
+                # 'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_January.html'
+                # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_February.html'
+                # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_March.html'
+                # ,'https://earthquake.phivolcs.dost.gov.ph/EQLatest-Monthly/2025/2025_April.html'
+            ]
             
+
+        logger.log_message(f'Scraping Method: {scraping_method}')
+    
+        for url in url_list:
+            try:
+                logger.log_message(f'Started Scraping for Url: {url}')
+                    
+                # Suppress all warnings
+                warnings.filterwarnings("ignore")
+                
+                # Scrape for the Main Page (Summary)
+                browser = initialize_scrapper(url, logger)
+                scraped_data = scrape_summary_data(browser, logger)
+                latest_date, latest_time, latest_datetime, df_final = clean_summary_data(scraped_data, logger)
+                
+                # Scrape for the Detailed Report
+                df_final_with_details = scrape_detail_data(df_final, logger)
+                
+                logger.log_message(f"Final Dataframe Ready")
+                
+                # # dumping to database
+                # dump_to_database(df_final_with_details, logger)
+                
+                csv_file_name = f'earthquake_data_latest_datapoint_{latest_datetime}.csv'
+                csv_local_file_path = f'scraped_data/{csv_file_name}'
+                df_final_with_details.to_csv(csv_local_file_path, index=False)
+
+                current_dir = get_current_file_dir()
+
+                logger.log_message(f"-> current_dir: {current_dir}")
+                logger.log_message(f"-> csv_file_name: {csv_file_name}")
+                
+                blob_folder_path = generate_blob_folder_path(latest_date)
+                blob_file_name = f'earthquake_data_latest_datapoint_{latest_date}_{latest_time}.csv'
+                
+                logger.log_message(f"-> blob_folder_path: {blob_folder_path}")
+                logger.log_message(f"-> blob_file_name: {blob_file_name}")
+                
+                azure = Azure(logger)
+                # azure.upload_data_to_blob_storage(os.path.join(current_dir, 'scraped_data'), csv_file_name)
+                azure.upload_data_to_blob_storage(os.path.join(current_dir, csv_local_file_path), blob_folder_path, blob_file_name)
+
+                logger.log_message(f'Scraping for Url Finished')
+                
+            except Exception as e:
+                logger.log_message(f"Encountered an Error: {e}", level='exception')
+                logger.log_message(f"Skipping this Url: {url}", "warning")
+                
+                continue  # Skip to next URL
             
-            
-            # Scrape for the Main Page (Summary)
-            browser = initialize_scrapper(url, logger)
-            scraped_data = scrape_summary_data(browser, logger)
-            latest_datetime, df_final = clean_summary_data(scraped_data, logger)
-            
-            # Scrape for the Detailed Report
-                # read csv (dummy)
-                # df_final = pd.read_csv('scraped_data/earthquake_data_october_2024.csv')
-            df_final_with_details = scrape_detail_data(df_final, logger)
-
-
-            # # dumping to database
-            # dump_to_database(df_final_with_details, logger)
-            
-            # print('\n')
-            # print(df_final_with_details)
-
-            # Save the DataFrame to a CSV file
-            csv_file_name = f'earthquake_data_{latest_datetime}.csv'
-            print("-> csv_file_name: ", csv_file_name)
-            csv_file_path = f'scraped_data/{csv_file_name}'
-            print("-> csv_file_path: ", csv_file_path)
-            df_final_with_details.to_csv(csv_file_path, index=False)
-
-            current_dir = os.path.dirname(os.path.abspath(__file__))
-            # print("-> current_dir: ", current_dir)
-
-            logger.log_message(f"-> current_dir: {current_dir}")
-            logger.log_message(f"-> csv_file_name: {csv_file_name}")
-
-            azure = Azure(logger)
-            azure.upload_data_to_blob_storage(os.path.join(current_dir, 'scraped_data'), csv_file_name)
-
     except Exception as e:
-        logger.log_message(f"Scraper encountered an Error: {e}", level='exception')
+        logger.log_message(f"Error occurred: {e}", "exception")
         
     finally:
+        log_path = logger.finalize_log()
+        print(f"Log saved at: {log_path}")
         app_end_time = time.time()
         elapsed_runtime = timedelta(seconds=int(app_end_time - app_start_time))
         logger.log_message("Application Finished")
