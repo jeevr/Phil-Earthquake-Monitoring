@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "dataflow_segregate_by_day",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -30,8 +30,7 @@
 				"parameters{",
 				"     param_year as string,",
 				"     param_month as string,",
-				"     param_day as string,",
-				"     param_date as string",
+				"     param_day as string",
 				"}",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
