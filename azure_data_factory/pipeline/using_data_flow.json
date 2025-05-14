@@ -20,41 +20,60 @@
 						"type": "DataFlowReference",
 						"parameters": {
 							"df_param_year": {
-								"value": "@pipeline().parameters.pl_param_year",
+								"value": "@formatDateTime(pipeline().parameters.pl_date, 'yyyy')",
 								"type": "Expression"
 							},
 							"df_param_month": {
-								"value": "@pipeline().parameters.pl_param_month",
+								"value": "@formatDateTime(pipeline().parameters.pl_date, 'MM')",
 								"type": "Expression"
 							},
 							"df_param_day": {
-								"value": "@pipeline().parameters.pl_param_day",
+								"value": "@formatDateTime(pipeline().parameters.pl_date, 'dd')",
 								"type": "Expression"
 							}
 						},
 						"datasetParameters": {
 							"inputCSV": {
 								"param_year": {
-									"value": "@pipeline().parameters.pl_param_year",
+									"value": "@formatDateTime(pipeline().parameters.pl_date, 'yyyy')",
 									"type": "Expression"
 								},
 								"param_month": {
-									"value": "@pipeline().parameters.pl_param_month",
+									"value": "@formatDateTime(pipeline().parameters.pl_date, 'MM')",
+									"type": "Expression"
+								},
+								"param_day": {
+									"value": "@formatDateTime(pipeline().parameters.pl_date, 'dd')",
 									"type": "Expression"
 								}
 							},
 							"sink1": {
 								"param_year": {
-									"value": "@pipeline().parameters.pl_param_year",
+									"value": "@formatDateTime(pipeline().parameters.pl_date, 'yyyy')",
 									"type": "Expression"
 								},
 								"param_month": {
-									"value": "@pipeline().parameters.pl_param_month",
+									"value": "@formatDateTime(pipeline().parameters.pl_date, 'MM')",
 									"type": "Expression"
 								},
 								"param_day": {
-									"value": "@pipeline().parameters.pl_param_day",
+									"value": "@formatDateTime(pipeline().parameters.pl_date, 'dd')",
 									"type": "Expression"
+								}
+							}
+						},
+						"linkedServiceParameters": {
+							"inputCSV": {
+								"schemaLinkedService": {
+									"param_year": "@formatDateTime(pipeline().parameters.pl_date, 'yyyy')",
+									"param_month": {
+										"value": "@formatDateTime(pipeline().parameters.pl_date, 'MM')",
+										"type": "Expression"
+									},
+									"param_day": {
+										"value": "@formatDateTime(pipeline().parameters.pl_date, 'dd')",
+										"type": "Expression"
+									}
 								}
 							}
 						}
@@ -79,6 +98,10 @@
 			"pl_param_day": {
 				"type": "string",
 				"defaultValue": "01"
+			},
+			"pl_date": {
+				"type": "string",
+				"defaultValue": "2024-01-01"
 			}
 		},
 		"annotations": []
