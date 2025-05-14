@@ -19,7 +19,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"folderPath": {
-					"value": "@concat(\n    'bronze/scraped-data/',\n    'year=', dataset().param_year, '/',\n    'month=', dataset().param_month\n)\n",
+					"value": "@concat(\n    'bronze/scraped-data/',\n    'year=2024/', \n    'month=01'\n)",
 					"type": "Expression"
 				},
 				"container": "earth-quake-data"

@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "dataflow1",
+				"name": "dataflow_segregate_by_day",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
@@ -19,41 +19,41 @@
 						"referenceName": "dataflow_segregate_by_day",
 						"type": "DataFlowReference",
 						"parameters": {
-							"param_year": {
-								"value": "@pipeline().parameters.param_year",
+							"df_param_year": {
+								"value": "@pipeline().parameters.pl_param_year",
 								"type": "Expression"
 							},
-							"param_month": {
-								"value": "@pipeline().parameters.param_month",
+							"df_param_month": {
+								"value": "@pipeline().parameters.pl_param_month",
 								"type": "Expression"
 							},
-							"param_day": {
-								"value": "@pipeline().parameters.param_day",
+							"df_param_day": {
+								"value": "@pipeline().parameters.pl_param_day",
 								"type": "Expression"
 							}
 						},
 						"datasetParameters": {
 							"inputCSV": {
 								"param_year": {
-									"value": "@pipeline().parameters.param_year",
+									"value": "@pipeline().parameters.pl_param_year",
 									"type": "Expression"
 								},
 								"param_month": {
-									"value": "@pipeline().parameters.param_month",
+									"value": "@pipeline().parameters.pl_param_month",
 									"type": "Expression"
 								}
 							},
 							"sink1": {
 								"param_year": {
-									"value": "@pipeline().parameters.param_year",
+									"value": "@pipeline().parameters.pl_param_year",
 									"type": "Expression"
 								},
 								"param_month": {
-									"value": "@pipeline().parameters.param_month",
+									"value": "@pipeline().parameters.pl_param_month",
 									"type": "Expression"
 								},
 								"param_day": {
-									"value": "@pipeline().parameters.param_day",
+									"value": "@pipeline().parameters.pl_param_day",
 									"type": "Expression"
 								}
 							}
@@ -68,15 +68,15 @@
 			}
 		],
 		"parameters": {
-			"param_year": {
+			"pl_param_year": {
 				"type": "string",
 				"defaultValue": "2024"
 			},
-			"param_month": {
+			"pl_param_month": {
 				"type": "string",
 				"defaultValue": "01"
 			},
-			"param_day": {
+			"pl_param_day": {
 				"type": "string",
 				"defaultValue": "01"
 			}
