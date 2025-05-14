@@ -39,7 +39,7 @@
 				"inputCSV filter(toDate(date) == toDate(concat($param_year, '-', lpad($param_month, 2, '0'), '-', lpad($param_day, 2, '0')))) ~> filterday01",
 				"filterday01 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     filePattern:'',",
+				"     filePattern:(concat('earthquake_data_', lpad($param_day, 2, '0'))),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
