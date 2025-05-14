@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "test_input",
+						"referenceName": "CSVInput",
 						"type": "DatasetReference"
 					},
 					"name": "inputCSV"
@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "test_output",
+						"referenceName": "CSVOutput",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
@@ -28,29 +28,18 @@
 			],
 			"scriptLines": [
 				"parameters{",
-				"     param_year as string ('2024'),",
-				"     param_month as string ('01')",
+				"     param_year as string,",
+				"     param_month as string,",
+				"     param_day as string,",
+				"     param_date as string",
 				"}",
-				"source(output(",
-				"          date_time as string,",
-				"          date as string,",
-				"          time as string,",
-				"          latitude as string,",
-				"          longitude as string,",
-				"          depth_km as string,",
-				"          depth_km_symbol as string,",
-				"          magnitude as string,",
-				"          location as string,",
-				"          hlink as string,",
-				"          details as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
+				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false,",
-				"     partitionBy('hash', 1)) ~> inputCSV",
-				"inputCSV filter(equals(toDate(date),toDate('2024-01-31'))) ~> filterday01",
+				"     ignoreNoFilesFound: false) ~> inputCSV",
+				"inputCSV filter(toDate(date) == toDate(concat($param_year, '-', lpad($param_month, 2, '0'), '-', lpad($param_day, 2, '0')))) ~> filterday01",
 				"filterday01 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     filePattern:'',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]

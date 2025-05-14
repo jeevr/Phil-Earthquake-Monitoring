@@ -21,11 +21,6 @@
 						"parameters": {
 							"param_year": "'2024'",
 							"param_month": "'01'"
-						},
-						"datasetParameters": {
-							"inputCSV": {
-								"pinput_year": "2024"
-							}
 						}
 					},
 					"compute": {

@@ -5,12 +5,23 @@
 			"referenceName": "AzureBlobStorage_Input",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"param_year": {
+				"type": "string"
+			},
+			"param_month": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "bronze/scraped-data",
+				"folderPath": {
+					"value": "@concat(\n    'bronze/scraped-data/',\n    'year=', dataset().param_year, '/',\n    'month=', dataset().param_month\n)\n",
+					"type": "Expression"
+				},
 				"container": "earth-quake-data"
 			},
 			"columnDelimiter": ",",
