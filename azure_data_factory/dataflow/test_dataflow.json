@@ -1,0 +1,72 @@
+{
+	"name": "test_dataflow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CSVInput",
+						"type": "DatasetReference"
+					},
+					"name": "SourceCSV"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CSVOutput",
+						"type": "DatasetReference"
+					},
+					"name": "OutputCSV"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     df_prm_date as string",
+				"}",
+				"source(output(",
+				"          date_time as string,",
+				"          date as string,",
+				"          time as string,",
+				"          latitude as string,",
+				"          longitude as string,",
+				"          depth_km as string,",
+				"          depth_km_symbol as string,",
+				"          magnitude as string,",
+				"          location as string,",
+				"          hlink as string,",
+				"          details as string,",
+				"          year as string,",
+				"          month as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SourceCSV",
+				"SourceCSV filter(toDate(date, 'MM/dd/yyyy') == toDate(concat(toString($df_prm_year), '-', lpad(toString($df_prm_month), 2, '0'), '-', lpad(toString($df_prm_day), 2, '0')))) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          date_time as string,",
+				"          date as string,",
+				"          time as string,",
+				"          latitude as string,",
+				"          longitude as string,",
+				"          depth_km as string,",
+				"          depth_km_symbol as string,",
+				"          magnitude as string,",
+				"          location as string,",
+				"          hlink as string,",
+				"          details as string",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> OutputCSV"
+			]
+		}
+	}
+}

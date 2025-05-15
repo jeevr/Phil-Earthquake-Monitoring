@@ -6,13 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"param_year": {
-				"type": "string"
-			},
-			"param_month": {
-				"type": "string"
-			},
-			"param_day": {
+			"ds_prm_out_date": {
 				"type": "string"
 			}
 		},
@@ -21,8 +15,9 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "'earthquake_data.csv'",
 				"folderPath": {
-					"value": "@concat(\n    'silver/scraped-data-segregated/',\n    'year=', dataset().param_year, '/',\n    'month=', dataset().param_month, '/',\n    'day=', dataset().param_day\n)\n",
+					"value": "@concat(\n    'silver/scraped-data-segregated/year=', \n    dataset().ds_prm_out_year, \n    '/month=', \n    dataset().ds_prm_out_month,\n    '/day=', \n    dataset().ds_prm_out_day\n)",
 					"type": "Expression"
 				},
 				"container": "earth-quake-data"
@@ -32,6 +27,51 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "date_time",
+				"type": "String"
+			},
+			{
+				"name": "date",
+				"type": "String"
+			},
+			{
+				"name": "time",
+				"type": "String"
+			},
+			{
+				"name": "latitude",
+				"type": "String"
+			},
+			{
+				"name": "longitude",
+				"type": "String"
+			},
+			{
+				"name": "depth_km",
+				"type": "String"
+			},
+			{
+				"name": "depth_km_symbol",
+				"type": "String"
+			},
+			{
+				"name": "magnitude",
+				"type": "String"
+			},
+			{
+				"name": "location",
+				"type": "String"
+			},
+			{
+				"name": "hlink",
+				"type": "String"
+			},
+			{
+				"name": "details",
+				"type": "String"
+			}
+		]
 	}
 }

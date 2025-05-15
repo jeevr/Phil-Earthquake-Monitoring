@@ -6,13 +6,10 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"param_year": {
+			"ds_prm_year": {
 				"type": "string"
 			},
-			"param_month": {
-				"type": "string"
-			},
-			"param_day": {
+			"ds_prm_month": {
 				"type": "string"
 			}
 		},
@@ -21,6 +18,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@concat(\n    'bronze/scraped-data/year=',\n    dataset().ds_prm_year, \n    '/month=', \n    dataset().ds_prm_month\n)\n",
+					"type": "Expression"
+				},
 				"container": "earth-quake-data"
 			},
 			"columnDelimiter": ",",
@@ -28,6 +29,59 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "date_time",
+				"type": "String"
+			},
+			{
+				"name": "date",
+				"type": "String"
+			},
+			{
+				"name": "time",
+				"type": "String"
+			},
+			{
+				"name": "latitude",
+				"type": "String"
+			},
+			{
+				"name": "longitude",
+				"type": "String"
+			},
+			{
+				"name": "depth_km",
+				"type": "String"
+			},
+			{
+				"name": "depth_km_symbol",
+				"type": "String"
+			},
+			{
+				"name": "magnitude",
+				"type": "String"
+			},
+			{
+				"name": "location",
+				"type": "String"
+			},
+			{
+				"name": "hlink",
+				"type": "String"
+			},
+			{
+				"name": "details",
+				"type": "String"
+			},
+			{
+				"name": "year",
+				"type": "String"
+			},
+			{
+				"name": "month",
+				"type": "String"
+			}
+		]
 	}
 }
