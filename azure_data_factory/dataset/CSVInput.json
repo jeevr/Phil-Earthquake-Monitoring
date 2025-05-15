@@ -10,10 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": {
-					"value": "\n",
-					"type": "Expression"
-				},
 				"container": "earth-quake-data"
 			},
 			"columnDelimiter": ",",
@@ -64,14 +60,6 @@
 			},
 			{
 				"name": "details",
-				"type": "String"
-			},
-			{
-				"name": "year",
-				"type": "String"
-			},
-			{
-				"name": "month",
 				"type": "String"
 			}
 		]
