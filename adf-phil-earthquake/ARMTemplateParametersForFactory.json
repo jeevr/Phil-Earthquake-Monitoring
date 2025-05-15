@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-phil-earthquake"
+		},
+		"AzureBlobStorage_EarthquakeData_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage_Input_connectionString": {
+			"value": ""
+		},
+		"AzureBlobStorage_Ouput_connectionString": {
+			"value": ""
+		},
+		"trigger1_properties_typeProperties_scope": {
+			"value": "/subscriptions/2ddf334d-9819-469e-9504-8754bcfc13e7/resourceGroups/Phil-Earthquake-RG/providers/Microsoft.Storage/storageAccounts/earthquakedatastorage"
+		}
+	}
+}

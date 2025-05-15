@@ -1,0 +1,416 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-phil-earthquake"
+		},
+		"AzureBlobStorage_EarthquakeData_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage_EarthquakeData'"
+		},
+		"AzureBlobStorage_Input_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage_Input'"
+		},
+		"AzureBlobStorage_Ouput_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage_Ouput'"
+		},
+		"trigger1_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/2ddf334d-9819-469e-9504-8754bcfc13e7/resourceGroups/Phil-Earthquake-RG/providers/Microsoft.Storage/storageAccounts/earthquakedatastorage"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/CSVInput')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_Input",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "\n",
+							"type": "Expression"
+						},
+						"container": "earth-quake-data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "date_time",
+						"type": "String"
+					},
+					{
+						"name": "date",
+						"type": "String"
+					},
+					{
+						"name": "time",
+						"type": "String"
+					},
+					{
+						"name": "latitude",
+						"type": "String"
+					},
+					{
+						"name": "longitude",
+						"type": "String"
+					},
+					{
+						"name": "depth_km",
+						"type": "String"
+					},
+					{
+						"name": "depth_km_symbol",
+						"type": "String"
+					},
+					{
+						"name": "magnitude",
+						"type": "String"
+					},
+					{
+						"name": "location",
+						"type": "String"
+					},
+					{
+						"name": "hlink",
+						"type": "String"
+					},
+					{
+						"name": "details",
+						"type": "String"
+					},
+					{
+						"name": "year",
+						"type": "String"
+					},
+					{
+						"name": "month",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_Input')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CSVOutput')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_Ouput",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "earth-quake-data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "date_time",
+						"type": "String"
+					},
+					{
+						"name": "date",
+						"type": "String"
+					},
+					{
+						"name": "time",
+						"type": "String"
+					},
+					{
+						"name": "latitude",
+						"type": "String"
+					},
+					{
+						"name": "longitude",
+						"type": "String"
+					},
+					{
+						"name": "depth_km",
+						"type": "String"
+					},
+					{
+						"name": "depth_km_symbol",
+						"type": "String"
+					},
+					{
+						"name": "magnitude",
+						"type": "String"
+					},
+					{
+						"name": "location",
+						"type": "String"
+					},
+					{
+						"name": "hlink",
+						"type": "String"
+					},
+					{
+						"name": "details",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_Ouput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage_EarthquakeData')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage_EarthquakeData_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage_Input')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage_Input_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage_Ouput')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorage_Ouput_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/scraped-data/blobs/",
+					"blobPathEndsWith": ".csv",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger1_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/test-pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "test_dataflow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "test_dataflow",
+								"type": "DataFlowReference",
+								"parameters": {
+									"df_prm_year": {
+										"value": "@pipeline().parameters.pl_prm_year",
+										"type": "Expression"
+									},
+									"df_prm_month": {
+										"value": "@pipeline().parameters.pl_prm_month",
+										"type": "Expression"
+									},
+									"df_prm_day": {
+										"value": "@pipeline().parameters.pl_prm_day",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SourceCSV": {},
+									"OutputCSV": {}
+								},
+								"linkedServiceParameters": {}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"pl_prm_year": {
+						"type": "int",
+						"defaultValue": 2024
+					},
+					"pl_prm_month": {
+						"type": "int",
+						"defaultValue": 1
+					},
+					"pl_prm_day": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/test_dataflow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/test_dataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CSVInput",
+								"type": "DatasetReference"
+							},
+							"name": "SourceCSV"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CSVOutput",
+								"type": "DatasetReference"
+							},
+							"name": "OutputCSV"
+						}
+					],
+					"transformations": [
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     df_prm_year as integer,",
+						"     df_prm_month as integer,",
+						"     df_prm_day as integer",
+						"}",
+						"source(output(",
+						"          date_time as string,",
+						"          date as string,",
+						"          time as string,",
+						"          latitude as string,",
+						"          longitude as string,",
+						"          depth_km as string,",
+						"          depth_km_symbol as string,",
+						"          magnitude as string,",
+						"          location as string,",
+						"          hlink as string,",
+						"          details as string,",
+						"          year as string,",
+						"          month as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     wildcardPaths:[(concat(\r",
+						"    'bronze/scraped-data/year=', \r",
+						"    toString($df_prm_year),\r",
+						"    '/month=', \r",
+						"    lpad(toString($df_prm_month), 2, '0')\r",
+						")\r",
+						")]) ~> SourceCSV",
+						"SourceCSV filter(toDate(date, 'MM/dd/yyyy') == toDate(concat(toString($df_prm_year), '-', lpad(toString($df_prm_month), 2, '0'), '-', lpad(toString($df_prm_day), 2, '0')))) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          date_time as string,",
+						"          date as string,",
+						"          time as string,",
+						"          latitude as string,",
+						"          longitude as string,",
+						"          depth_km as string,",
+						"          depth_km_symbol as string,",
+						"          magnitude as string,",
+						"          location as string,",
+						"          hlink as string,",
+						"          details as string",
+						"     ),",
+						"     filePattern:(concat(\r",
+						"    'silver/scraped-data-segregated/year=', toString($df_prm_year), \r",
+						"    '/month=', lpad(toString($df_prm_month), 2, '0'), \r",
+						"    '/day=', lpad(toString($df_prm_day), 2, '0'),\r",
+						"    '/earthquake_data.csv'\r",
+						")\r",
+						"),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> OutputCSV"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CSVInput')]",
+				"[concat(variables('factoryId'), '/datasets/CSVOutput')]"
+			]
+		}
+	]
+}
