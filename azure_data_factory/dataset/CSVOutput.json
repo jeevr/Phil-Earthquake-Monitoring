@@ -5,21 +5,11 @@
 			"referenceName": "AzureBlobStorage_Ouput",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"ds_prm_out_date": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "'earthquake_data.csv'",
-				"folderPath": {
-					"value": "@concat(\n    'silver/scraped-data-segregated/year=', \n    dataset().ds_prm_out_year, \n    '/month=', \n    dataset().ds_prm_out_month,\n    '/day=', \n    dataset().ds_prm_out_day\n)",
-					"type": "Expression"
-				},
 				"container": "earth-quake-data"
 			},
 			"columnDelimiter": ",",
