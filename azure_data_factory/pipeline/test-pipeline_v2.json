@@ -65,6 +65,44 @@
 					},
 					"traceLevel": "Fine"
 				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pl_var_date",
+					"value": "2024-02-01"
+				}
+			},
+			{
+				"name": "Set variable2",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pl_var_year_str",
+					"value": {
+						"value": "@formatDateTime(variables('pl_var_date'), 'yyyy')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -91,6 +129,17 @@
 			"pl_prm_day_blob": {
 				"type": "string",
 				"defaultValue": "01"
+			}
+		},
+		"variables": {
+			"pl_var_date": {
+				"type": "String"
+			},
+			"pl_var_year_str": {
+				"type": "String"
+			},
+			"fgh": {
+				"type": "Array"
 			}
 		},
 		"annotations": []
