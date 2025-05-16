@@ -29,6 +29,744 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/pipeline_WORKING_VERSION')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set Year String",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_year_str",
+							"value": {
+								"value": "@split(variables('pl_var_date'),'-')[0]",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Year Int",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_year_int",
+							"value": {
+								"value": "@int(split(variables('pl_var_date'), '-')[0])",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Date",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_date",
+							"value": {
+								"value": "@pipeline().parameters.pl_param_date",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Month String",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_month_str",
+							"value": {
+								"value": "@split(variables('pl_var_date'),'-')[1]",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Day String",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_day_str",
+							"value": {
+								"value": "@split(variables('pl_var_date'),'-')[2]",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Month Int",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_month_int",
+							"value": {
+								"value": "@int(split(variables('pl_var_date'), '-')[1])",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Day Int",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_day_int",
+							"value": {
+								"value": "@int(split(variables('pl_var_date'), '-')[2])",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "test_dataflow_v2",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "Set Year String",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Set Year Int",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Set Month String",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Set Day String",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Set Month Int",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Set Day Int",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "test_dataflow_v2",
+								"type": "DataFlowReference",
+								"parameters": {
+									"df_prm_year": {
+										"value": "@variables('pl_var_year_int')",
+										"type": "Expression"
+									},
+									"df_prm_month": {
+										"value": "@variables('pl_var_month_int')",
+										"type": "Expression"
+									},
+									"df_prm_day": {
+										"value": "@variables('pl_var_day_int')",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SourceCSV": {
+										"input_prm_year": {
+											"value": "@variables('pl_var_year_str')",
+											"type": "Expression"
+										},
+										"input_prm_month": {
+											"value": "@variables('pl_var_month_str')",
+											"type": "Expression"
+										}
+									},
+									"OutputCSV": {
+										"output_prm_year": {
+											"value": "@variables('pl_var_year_str')",
+											"type": "Expression"
+										},
+										"output_prm_month": {
+											"value": "@variables('pl_var_month_str')",
+											"type": "Expression"
+										},
+										"output_prm_day": {
+											"value": "@variables('pl_var_day_str')",
+											"type": "Expression"
+										}
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"pl_param_date": {
+						"type": "string",
+						"defaultValue": "2024-02-29"
+					}
+				},
+				"variables": {
+					"pl_var_year_int": {
+						"type": "Integer"
+					},
+					"pl_var_month_int": {
+						"type": "Integer"
+					},
+					"pl_var_day_int": {
+						"type": "Integer"
+					},
+					"pl_var_year_str": {
+						"type": "String"
+					},
+					"pl_var_month_str": {
+						"type": "String"
+					},
+					"pl_var_day_str": {
+						"type": "String"
+					},
+					"pl_var_date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/test_dataflow_v2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl-var')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Set Year String",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_year_str",
+							"value": {
+								"value": "@split(variables('pl_var_date'),'-')[0]",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Year Int",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_year_int",
+							"value": {
+								"value": "@int(split(variables('pl_var_date'), '-')[0])",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Date",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_date",
+							"value": {
+								"value": "2024-01-02",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Month String",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_month_str",
+							"value": {
+								"value": "@split(variables('pl_var_date'),'-')[1]",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Day String",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_day_str",
+							"value": {
+								"value": "@split(variables('pl_var_date'),'-')[2]",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Month Int",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_month_int",
+							"value": {
+								"value": "@int(split(variables('pl_var_date'), '-')[1])",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "Set Day Int",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set Date",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_day_int",
+							"value": {
+								"value": "@int(split(variables('pl_var_date'), '-')[2])",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"variables": {
+					"pl_var_year_int": {
+						"type": "Integer"
+					},
+					"pl_var_month_int": {
+						"type": "Integer"
+					},
+					"pl_var_day_int": {
+						"type": "Integer"
+					},
+					"pl_var_year_str": {
+						"type": "String"
+					},
+					"pl_var_month_str": {
+						"type": "String"
+					},
+					"pl_var_day_str": {
+						"type": "String"
+					},
+					"fgh": {
+						"type": "Array"
+					},
+					"pl_var_date": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/test-pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "test_dataflow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "test_dataflow",
+								"type": "DataFlowReference",
+								"parameters": {
+									"df_prm_year": {
+										"value": "@pipeline().parameters.pl_prm_year",
+										"type": "Expression"
+									},
+									"df_prm_month": {
+										"value": "@pipeline().parameters.pl_prm_month",
+										"type": "Expression"
+									},
+									"df_prm_day": {
+										"value": "@pipeline().parameters.pl_prm_day",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SourceCSV": {},
+									"OutputCSV": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"pl_prm_year": {
+						"type": "int",
+						"defaultValue": 2024
+					},
+					"pl_prm_month": {
+						"type": "int",
+						"defaultValue": 1
+					},
+					"pl_prm_day": {
+						"type": "int",
+						"defaultValue": 1
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/test_dataflow')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/test-pipeline_v2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "test_dataflow_v2",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "test_dataflow_v2",
+								"type": "DataFlowReference",
+								"parameters": {
+									"df_prm_year": {
+										"value": "@pipeline().parameters.pl_prm_year_df",
+										"type": "Expression"
+									},
+									"df_prm_month": {
+										"value": "@pipeline().parameters.pl_prm_month_df",
+										"type": "Expression"
+									},
+									"df_prm_day": {
+										"value": "@pipeline().parameters.pl_prm_day_df",
+										"type": "Expression"
+									}
+								},
+								"datasetParameters": {
+									"SourceCSV": {
+										"input_prm_year": {
+											"value": "@pipeline().parameters.pl_prm_year_blob",
+											"type": "Expression"
+										},
+										"input_prm_month": {
+											"value": "@pipeline().parameters.pl_prm_month_blob",
+											"type": "Expression"
+										}
+									},
+									"OutputCSV": {
+										"output_prm_year": {
+											"value": "@pipeline().parameters.pl_prm_year_blob",
+											"type": "Expression"
+										},
+										"output_prm_month": {
+											"value": "@pipeline().parameters.pl_prm_month_blob",
+											"type": "Expression"
+										},
+										"output_prm_day": {
+											"value": "@pipeline().parameters.pl_prm_day_blob",
+											"type": "Expression"
+										}
+									}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_date",
+							"value": "2024-02-01"
+						}
+					},
+					{
+						"name": "Set variable2",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "pl_var_year_str",
+							"value": {
+								"value": "@formatDateTime(variables('pl_var_date'), 'yyyy')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"pl_prm_year_df": {
+						"type": "int",
+						"defaultValue": 2024
+					},
+					"pl_prm_month_df": {
+						"type": "int",
+						"defaultValue": 2
+					},
+					"pl_prm_day_df": {
+						"type": "int",
+						"defaultValue": 1
+					},
+					"pl_prm_year_blob": {
+						"type": "string",
+						"defaultValue": "2024"
+					},
+					"pl_prm_month_blob": {
+						"type": "string",
+						"defaultValue": "02"
+					},
+					"pl_prm_day_blob": {
+						"type": "string",
+						"defaultValue": "01"
+					}
+				},
+				"variables": {
+					"pl_var_date": {
+						"type": "String"
+					},
+					"pl_var_year_str": {
+						"type": "String"
+					},
+					"fgh": {
+						"type": "Array"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/test_dataflow_v2')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CSVInput')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -42,8 +780,91 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"container": "earth-quake-data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "date_time",
+						"type": "String"
+					},
+					{
+						"name": "date",
+						"type": "String"
+					},
+					{
+						"name": "time",
+						"type": "String"
+					},
+					{
+						"name": "latitude",
+						"type": "String"
+					},
+					{
+						"name": "longitude",
+						"type": "String"
+					},
+					{
+						"name": "depth_km",
+						"type": "String"
+					},
+					{
+						"name": "depth_km_symbol",
+						"type": "String"
+					},
+					{
+						"name": "magnitude",
+						"type": "String"
+					},
+					{
+						"name": "location",
+						"type": "String"
+					},
+					{
+						"name": "hlink",
+						"type": "String"
+					},
+					{
+						"name": "details",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_Input')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CSVInput_v2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_Input",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"input_prm_year": {
+						"type": "string"
+					},
+					"input_prm_month": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "V2"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
 						"folderPath": {
-							"value": "\n",
+							"value": "@concat(\n    'bronze/scraped-data/year=', \n    dataset().input_prm_year, \n    '/month=', \n    dataset().input_prm_month\n)",
 							"type": "Expression"
 						},
 						"container": "earth-quake-data"
@@ -97,14 +918,6 @@
 					{
 						"name": "details",
 						"type": "String"
-					},
-					{
-						"name": "year",
-						"type": "String"
-					},
-					{
-						"name": "month",
-						"type": "String"
 					}
 				]
 			},
@@ -126,6 +939,96 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"container": "earth-quake-data"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "date_time",
+						"type": "String"
+					},
+					{
+						"name": "date",
+						"type": "String"
+					},
+					{
+						"name": "time",
+						"type": "String"
+					},
+					{
+						"name": "latitude",
+						"type": "String"
+					},
+					{
+						"name": "longitude",
+						"type": "String"
+					},
+					{
+						"name": "depth_km",
+						"type": "String"
+					},
+					{
+						"name": "depth_km_symbol",
+						"type": "String"
+					},
+					{
+						"name": "magnitude",
+						"type": "String"
+					},
+					{
+						"name": "location",
+						"type": "String"
+					},
+					{
+						"name": "hlink",
+						"type": "String"
+					},
+					{
+						"name": "details",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage_Ouput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CSVOutput_v2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage_Ouput",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"output_prm_year": {
+						"type": "string"
+					},
+					"output_prm_month": {
+						"type": "string"
+					},
+					"output_prm_day": {
+						"type": "string"
+					}
+				},
+				"folder": {
+					"name": "V2"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": {
+							"value": "@concat(\n    'silver/scraped-data-segregated/year=',\n    dataset().output_prm_year,\n    '/month=',\n    dataset().output_prm_month,\n    '/day=',\n    dataset().output_prm_day\n)",
+							"type": "Expression"
+						},
 						"container": "earth-quake-data"
 					},
 					"columnDelimiter": ",",
@@ -245,80 +1148,6 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/test-pipeline')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "test_dataflow",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "test_dataflow",
-								"type": "DataFlowReference",
-								"parameters": {
-									"df_prm_year": {
-										"value": "@pipeline().parameters.pl_prm_year",
-										"type": "Expression"
-									},
-									"df_prm_month": {
-										"value": "@pipeline().parameters.pl_prm_month",
-										"type": "Expression"
-									},
-									"df_prm_day": {
-										"value": "@pipeline().parameters.pl_prm_day",
-										"type": "Expression"
-									}
-								},
-								"datasetParameters": {
-									"SourceCSV": {},
-									"OutputCSV": {}
-								},
-								"linkedServiceParameters": {}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"pl_prm_year": {
-						"type": "int",
-						"defaultValue": 2024
-					},
-					"pl_prm_month": {
-						"type": "int",
-						"defaultValue": 1
-					},
-					"pl_prm_day": {
-						"type": "int",
-						"defaultValue": 1
-					}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/test_dataflow')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/test_dataflow')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -410,6 +1239,86 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/CSVInput')]",
 				"[concat(variables('factoryId'), '/datasets/CSVOutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/test_dataflow_v2')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CSVInput_v2",
+								"type": "DatasetReference"
+							},
+							"name": "SourceCSV"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "CSVOutput_v2",
+								"type": "DatasetReference"
+							},
+							"name": "OutputCSV"
+						}
+					],
+					"transformations": [
+						{
+							"name": "filter1"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     df_prm_year as integer (2024),",
+						"     df_prm_month as integer (2),",
+						"     df_prm_day as integer (1)",
+						"}",
+						"source(output(",
+						"          date_time as string,",
+						"          date as string,",
+						"          time as string,",
+						"          latitude as string,",
+						"          longitude as string,",
+						"          depth_km as string,",
+						"          depth_km_symbol as string,",
+						"          magnitude as string,",
+						"          location as string,",
+						"          hlink as string,",
+						"          details as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> SourceCSV",
+						"SourceCSV filter(toDate(date, 'yyyy-MM-dd') == toDate(concat(toString($df_prm_year), '-', lpad(toString($df_prm_month), 2, '0'), '-', lpad(toString($df_prm_day), 2, '0')), 'yyyy-MM-dd')) ~> filter1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     input(",
+						"          date_time as string,",
+						"          date as string,",
+						"          time as string,",
+						"          latitude as string,",
+						"          longitude as string,",
+						"          depth_km as string,",
+						"          depth_km_symbol as string,",
+						"          magnitude as string,",
+						"          location as string,",
+						"          hlink as string,",
+						"          details as string",
+						"     ),",
+						"     partitionFileNames:['earthquake_data.csv'],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> OutputCSV"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CSVInput_v2')]",
+				"[concat(variables('factoryId'), '/datasets/CSVOutput_v2')]"
 			]
 		}
 	]
