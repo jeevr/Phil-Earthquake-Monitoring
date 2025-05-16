@@ -48,7 +48,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> SourceCSV",
-				"SourceCSV filter(toDate(date, 'yyyy-MM-dd') == toDate(concat(toString($df_prm_year), '-', lpad(toString($df_prm_month), 2, '0'), '-', lpad(toString($df_prm_day), 2, '0')))) ~> filter1",
+				"SourceCSV filter(toDate(date, 'yyyy-MM-dd') == toDate(concat(toString($df_prm_year), '-', lpad(toString($df_prm_month), 2, '0'), '-', lpad(toString($df_prm_day), 2, '0')), 'yyyy-MM-dd')) ~> filter1",
 				"filter1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
