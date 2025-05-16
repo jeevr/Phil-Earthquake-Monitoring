@@ -17,7 +17,47 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "test_dataflow_v2",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"parameters": {
+							"df_prm_year": {
+								"value": "@pipeline().parameters.pl_prm_year_df",
+								"type": "Expression"
+							},
+							"df_prm_month": {
+								"value": "@pipeline().parameters.pl_prm_month_df",
+								"type": "Expression"
+							},
+							"df_prm_day": {
+								"value": "@pipeline().parameters.pl_prm_day_df",
+								"type": "Expression"
+							}
+						},
+						"datasetParameters": {
+							"SourceCSV": {
+								"input_prm_year": {
+									"value": "@pipeline().parameters.pl_prm_year_blob",
+									"type": "Expression"
+								},
+								"input_prm_month": {
+									"value": "@pipeline().parameters.pl_prm_month_blob",
+									"type": "Expression"
+								}
+							},
+							"OutputCSV": {
+								"output_prm_year": {
+									"value": "@pipeline().parameters.pl_prm_year_blob",
+									"type": "Expression"
+								},
+								"output_prm_month": {
+									"value": "@pipeline().parameters.pl_prm_month_blob",
+									"type": "Expression"
+								},
+								"output_prm_day": {
+									"value": "@pipeline().parameters.pl_prm_day_blob",
+									"type": "Expression"
+								}
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
@@ -28,17 +68,29 @@
 			}
 		],
 		"parameters": {
-			"pl_prm_year": {
+			"pl_prm_year_df": {
 				"type": "int",
 				"defaultValue": 2024
 			},
-			"pl_prm_month": {
+			"pl_prm_month_df": {
 				"type": "int",
 				"defaultValue": 2
 			},
-			"pl_prm_day": {
+			"pl_prm_day_df": {
 				"type": "int",
 				"defaultValue": 1
+			},
+			"pl_prm_year_blob": {
+				"type": "string",
+				"defaultValue": "2024"
+			},
+			"pl_prm_month_blob": {
+				"type": "string",
+				"defaultValue": "02"
+			},
+			"pl_prm_day_blob": {
+				"type": "string",
+				"defaultValue": "01"
 			}
 		},
 		"annotations": []

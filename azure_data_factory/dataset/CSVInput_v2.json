@@ -22,7 +22,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"folderPath": {
-					"value": "@concat(\n    'bronze/scraped-data/year=', \n    dataset().input_prm_month, \n    '/month=', \n    dataset().input_prm_month\n)",
+					"value": "@concat(\n    'bronze/scraped-data/year=', \n    dataset().input_prm_year, \n    '/month=', \n    dataset().input_prm_month\n)",
 					"type": "Expression"
 				},
 				"container": "earth-quake-data"
