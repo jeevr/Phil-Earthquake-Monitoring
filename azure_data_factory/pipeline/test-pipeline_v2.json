@@ -1,0 +1,46 @@
+{
+	"name": "test-pipeline_v2",
+	"properties": {
+		"activities": [
+			{
+				"name": "test_dataflow_v2",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "test_dataflow_v2",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"pl_prm_year": {
+				"type": "int",
+				"defaultValue": 2024
+			},
+			"pl_prm_month": {
+				"type": "int",
+				"defaultValue": 2
+			},
+			"pl_prm_day": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
+		"annotations": []
+	}
+}
