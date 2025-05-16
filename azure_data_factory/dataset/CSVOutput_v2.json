@@ -25,7 +25,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"folderPath": {
-					"value": "@concat(\n    'silver/scraped-data-segregated/year=/',\n    dataset().output_prm_year,\n    '/month=',\n    dataset().output_prm_month,\n    '/day=',\n    dataset().output_prm_day\n)",
+					"value": "@concat(\n    'silver/scraped-data-segregated/year=',\n    dataset().output_prm_year,\n    '/month=',\n    dataset().output_prm_month,\n    '/day=',\n    dataset().output_prm_day\n)",
 					"type": "Expression"
 				},
 				"container": "earth-quake-data"

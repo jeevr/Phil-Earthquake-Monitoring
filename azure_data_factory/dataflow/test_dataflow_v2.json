@@ -64,8 +64,10 @@
 				"          hlink as string,",
 				"          details as string",
 				"     ),",
+				"     partitionFileNames:['earthquake_data.csv'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> OutputCSV"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> OutputCSV"
 			]
 		}
 	}

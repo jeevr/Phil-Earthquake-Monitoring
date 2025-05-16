@@ -1,0 +1,293 @@
+{
+	"name": "pipeline_with_vars",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set Year String",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pl_var_year_str",
+					"value": {
+						"value": "@split(variables('pl_var_date'),'-')[0]",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set Year Int",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pl_var_year_int",
+					"value": {
+						"value": "@int(split(variables('pl_var_date'), '-')[0])",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set Date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pl_var_date",
+					"value": {
+						"value": "2024-01-02",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set Month String",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pl_var_month_str",
+					"value": {
+						"value": "@split(variables('pl_var_date'),'-')[1]",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set Day String",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pl_var_day_str",
+					"value": {
+						"value": "@split(variables('pl_var_date'),'-')[2]",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set Month Int",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pl_var_month_int",
+					"value": {
+						"value": "@int(split(variables('pl_var_date'), '-')[1])",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set Day Int",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pl_var_day_int",
+					"value": {
+						"value": "@int(split(variables('pl_var_date'), '-')[2])",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "test_dataflow_v2",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Set Year String",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Year Int",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Month String",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Day String",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Month Int",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set Day Int",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "test_dataflow_v2",
+						"type": "DataFlowReference",
+						"parameters": {
+							"df_prm_year": {
+								"value": "@variables('pl_var_year_int')",
+								"type": "Expression"
+							},
+							"df_prm_month": {
+								"value": "@variables('pl_var_month_int')",
+								"type": "Expression"
+							},
+							"df_prm_day": {
+								"value": "@variables('pl_var_day_int')",
+								"type": "Expression"
+							}
+						},
+						"datasetParameters": {
+							"SourceCSV": {
+								"input_prm_year": {
+									"value": "@variables('pl_var_year_str')",
+									"type": "Expression"
+								},
+								"input_prm_month": {
+									"value": "@variables('pl_var_month_str')",
+									"type": "Expression"
+								}
+							},
+							"OutputCSV": {
+								"output_prm_year": {
+									"value": "@variables('pl_var_year_str')",
+									"type": "Expression"
+								},
+								"output_prm_month": {
+									"value": "@variables('pl_var_month_str')",
+									"type": "Expression"
+								},
+								"output_prm_day": {
+									"value": "@variables('pl_var_day_str')",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"variables": {
+			"pl_var_year_int": {
+				"type": "Integer"
+			},
+			"pl_var_month_int": {
+				"type": "Integer"
+			},
+			"pl_var_day_int": {
+				"type": "Integer"
+			},
+			"pl_var_year_str": {
+				"type": "String"
+			},
+			"pl_var_month_str": {
+				"type": "String"
+			},
+			"pl_var_day_str": {
+				"type": "String"
+			},
+			"pl_var_date": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
