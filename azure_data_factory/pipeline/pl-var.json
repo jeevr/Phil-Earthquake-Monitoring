@@ -29,14 +29,7 @@
 			{
 				"name": "Set Year Int",
 				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set Date",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
@@ -142,14 +135,7 @@
 			{
 				"name": "Set Day Int",
 				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set Date",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
@@ -162,6 +148,12 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": []
 			}
 		],
 		"variables": {
@@ -183,10 +175,10 @@
 			"pl_var_day_str": {
 				"type": "String"
 			},
-			"fgh": {
-				"type": "Array"
-			},
 			"pl_var_date": {
+				"type": "String"
+			},
+			"pl_var_last_day_of_month": {
 				"type": "String"
 			}
 		},

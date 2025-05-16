@@ -1,0 +1,14 @@
+{
+	"name": "pipeline_calendar_generator",
+	"properties": {
+		"parameters": {
+			"pl_prm_start_year": {
+				"type": "string"
+			},
+			"pl_prm_end_year": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
