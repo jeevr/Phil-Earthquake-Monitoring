@@ -18,11 +18,11 @@
 					"notebookPath": "/Workspace/Users/jayver.lendio.dev@gmail.com/CalendarGenerator",
 					"baseParameters": {
 						"start_date": {
-							"value": "@pipeline().parameters.pl_prm_start_year",
+							"value": "@pipeline().parameters.pl_prm_start_date",
 							"type": "Expression"
 						},
 						"end_date": {
-							"value": "@pipeline().parameters.pl_prm_end_year",
+							"value": "@pipeline().parameters.pl_prm_end_date",
 							"type": "Expression"
 						}
 					}
@@ -34,13 +34,13 @@
 			}
 		],
 		"parameters": {
-			"pl_prm_start_year": {
+			"pl_prm_start_date": {
 				"type": "string",
-				"defaultValue": "2024-01-01"
+				"defaultValue": "2023-01-01"
 			},
-			"pl_prm_end_year": {
+			"pl_prm_end_date": {
 				"type": "string",
-				"defaultValue": "2024-05-20"
+				"defaultValue": "2027-01-01"
 			}
 		},
 		"annotations": []
