@@ -20,13 +20,12 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"ds_prm_dir": {
-								"value": "@pipeline().parameters.pl_prm_dir",
+								"value": "@variables('pl_var_dir_base')",
 								"type": "Expression"
 							}
 						}
 					},
 					"fieldList": [
-						"childItems",
 						"childItems"
 					],
 					"storeSettings": {
@@ -39,7 +38,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "ForEach - Year Folder",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -52,12 +51,13 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get Metadata1').output.itemName",
+						"value": "@activity('Get Metadata - Root Folder').output.childItems",
 						"type": "Expression"
 					},
+					"isSequential": true,
 					"activities": [
 						{
-							"name": "Set variable1",
+							"name": "Set variable - Dir Year",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"policy": {
@@ -66,24 +66,59 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "pl_var_year",
+								"variableName": "pl_var_dir_base_year",
 								"value": {
-									"value": "@item().name",
+									"value": "@concat(variables('pl_var_dir_base'), '/', item().name)",
 									"type": "Expression"
 								}
 							}
 						},
 						{
-							"name": "Get Metadata1",
-							"type": "GetMetadata",
+							"name": "Append variable1",
+							"type": "AppendVariable",
 							"dependsOn": [
 								{
-									"activity": "Set variable1",
+									"activity": "Set variable - Dir Year",
 									"dependencyConditions": [
 										"Succeeded"
 									]
 								}
 							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pl_var_dir_year_array",
+								"value": {
+									"value": "@concat(variables('pl_var_dir_base'), '/', item().name)",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "ForEach - Month Folder",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "ForEach - Year Folder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('pl_var_dir_year_array')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Get Metadata - Month Level",
+							"type": "GetMetadata",
+							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -95,13 +130,7 @@
 							"typeProperties": {
 								"dataset": {
 									"referenceName": "AzureBlobRootFolder",
-									"type": "DatasetReference",
-									"parameters": {
-										"ds_prm_dir": {
-											"value": "@concat(\n    pipeline().parameters.pl_prm_dir,\n    variables('pl_var_year')\n)",
-											"type": "Expression"
-										}
-									}
+									"type": "DatasetReference"
 								},
 								"fieldList": [
 									"childItems"
@@ -119,20 +148,21 @@
 				}
 			}
 		],
-		"parameters": {
-			"pl_prm_dir": {
-				"type": "string",
-				"defaultValue": "silver/scraped-data-segregated"
-			}
-		},
 		"variables": {
-			"pl_var_year": {
+			"pl_var_dir_year_array": {
+				"type": "Array"
+			},
+			"pl_var_dir_base": {
+				"type": "String",
+				"defaultValue": "silver/scraped-data-segregated"
+			},
+			"pl_var_dir_base_year": {
 				"type": "String"
 			},
-			"pl_var_month": {
+			"pl_var_dir_base_year_month": {
 				"type": "String"
 			},
-			"pl_var_day": {
+			"pl_var_dir_base_year_month_day": {
 				"type": "String"
 			}
 		},

@@ -8,7 +8,7 @@
 		"parameters": {
 			"ds_prm_dir": {
 				"type": "string",
-				"defaultValue": "silver/scraped-data-segregated"
+				"defaultValue": "-"
 			}
 		},
 		"annotations": [],
