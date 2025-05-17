@@ -5,11 +5,22 @@
 			"referenceName": "AzureBlobStorageRootDir",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"ds_prm_dir": {
+				"type": "string",
+				"defaultValue": "silver/scraped-data-segregated"
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobStorageLocation"
+				"type": "AzureBlobStorageLocation",
+				"folderPath": {
+					"value": "@dataset().ds_prm_dir",
+					"type": "Expression"
+				},
+				"container": "earth-quake-data"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",

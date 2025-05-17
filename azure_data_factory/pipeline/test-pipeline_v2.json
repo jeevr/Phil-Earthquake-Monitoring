@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Get Metadata1",
+				"name": "Get Metadata - Root Folder",
 				"type": "GetMetadata",
 				"dependsOn": [],
 				"policy": {
@@ -17,9 +17,16 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "AzureBlobRootFolder",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_prm_dir": {
+								"value": "@pipeline().parameters.pl_prm_dir",
+								"type": "Expression"
+							}
+						}
 					},
 					"fieldList": [
+						"childItems",
 						"childItems"
 					],
 					"storeSettings": {
@@ -30,16 +37,102 @@
 						"type": "DelimitedTextReadSettings"
 					}
 				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata - Root Folder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata1').output.itemName",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "pl_var_year",
+								"value": {
+									"value": "@item().name",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Get Metadata1",
+							"type": "GetMetadata",
+							"dependsOn": [
+								{
+									"activity": "Set variable1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "AzureBlobRootFolder",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_prm_dir": {
+											"value": "@concat(\n    pipeline().parameters.pl_prm_dir,\n    variables('pl_var_year')\n)",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"childItems"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							}
+						}
+					]
+				}
 			}
 		],
+		"parameters": {
+			"pl_prm_dir": {
+				"type": "string",
+				"defaultValue": "silver/scraped-data-segregated"
+			}
+		},
 		"variables": {
-			"var_year": {
+			"pl_var_year": {
 				"type": "String"
 			},
-			"var_month": {
+			"pl_var_month": {
 				"type": "String"
 			},
-			"var_day": {
+			"pl_var_day": {
 				"type": "String"
 			}
 		},
