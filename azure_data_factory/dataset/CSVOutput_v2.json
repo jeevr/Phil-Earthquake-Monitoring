@@ -1,16 +1,34 @@
 {
-	"name": "earthquake_data_csv",
+	"name": "CSVOutput_v2",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureBlobStorage_EarthquakeData",
+			"referenceName": "AzureBlobStorage_Ouput",
 			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"output_prm_year": {
+				"type": "string"
+			},
+			"output_prm_month": {
+				"type": "string"
+			},
+			"output_prm_day": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "V2"
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"container": "scraped-data"
+				"folderPath": {
+					"value": "@concat(\n    'silver/scraped-data-segregated/year=',\n    dataset().output_prm_year,\n    '/month=',\n    dataset().output_prm_month,\n    '/day=',\n    dataset().output_prm_day\n)",
+					"type": "Expression"
+				},
+				"container": "earth-quake-data"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
@@ -63,6 +81,5 @@
 				"type": "String"
 			}
 		]
-	},
-	"type": "Microsoft.DataFactory/factories/datasets"
+	}
 }

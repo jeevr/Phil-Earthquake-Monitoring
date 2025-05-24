@@ -1,0 +1,34 @@
+{
+	"name": "dataflow_calendar_generator",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     df_prm_start_year as string,",
+				"     df_prm_end_year as string",
+				"}",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false) ~> source1",
+				"source1 derive(base_date = toDate(concat($df_prm_start_year, '-01-01'), 'yyyy-MM-dd'),",
+				"          {} = ERROR_FUNCTION('')) ~> derivedColumn1",
+				"derivedColumn1 derive(base_date = base_date,",
+				"          date = ERROR_FUNCTION('')) ~> derivedColumn2"
+			]
+		}
+	}
+}

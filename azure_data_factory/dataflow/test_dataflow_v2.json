@@ -1,0 +1,74 @@
+{
+	"name": "test_dataflow_v2",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "CSVInput_v2",
+						"type": "DatasetReference"
+					},
+					"name": "SourceCSV"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "CSVOutput_v2",
+						"type": "DatasetReference"
+					},
+					"name": "OutputCSV"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				}
+			],
+			"scriptLines": [
+				"parameters{",
+				"     df_prm_year as integer (2024),",
+				"     df_prm_month as integer (2),",
+				"     df_prm_day as integer (1)",
+				"}",
+				"source(output(",
+				"          date_time as string,",
+				"          date as string,",
+				"          time as string,",
+				"          latitude as string,",
+				"          longitude as string,",
+				"          depth_km as string,",
+				"          depth_km_symbol as string,",
+				"          magnitude as string,",
+				"          location as string,",
+				"          hlink as string,",
+				"          details as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SourceCSV",
+				"SourceCSV filter(toDate(date, 'yyyy-MM-dd') == toDate(concat(toString($df_prm_year), '-', lpad(toString($df_prm_month), 2, '0'), '-', lpad(toString($df_prm_day), 2, '0')), 'yyyy-MM-dd')) ~> filter1",
+				"filter1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          date_time as string,",
+				"          date as string,",
+				"          time as string,",
+				"          latitude as string,",
+				"          longitude as string,",
+				"          depth_km as string,",
+				"          depth_km_symbol as string,",
+				"          magnitude as string,",
+				"          location as string,",
+				"          hlink as string,",
+				"          details as string",
+				"     ),",
+				"     partitionFileNames:['earthquake_data.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> OutputCSV"
+			]
+		}
+	}
+}

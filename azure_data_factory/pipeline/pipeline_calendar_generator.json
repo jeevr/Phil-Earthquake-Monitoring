@@ -1,0 +1,48 @@
+{
+	"name": "pipeline_calendar_generator",
+	"properties": {
+		"activities": [
+			{
+				"name": "CalendarGenerator",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Workspace/Users/jayver.lendio.dev@gmail.com/CalendarGenerator",
+					"baseParameters": {
+						"start_date": {
+							"value": "@pipeline().parameters.pl_prm_start_date",
+							"type": "Expression"
+						},
+						"end_date": {
+							"value": "@pipeline().parameters.pl_prm_end_date",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureDatabricks",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"pl_prm_start_date": {
+				"type": "string",
+				"defaultValue": "2023-01-01"
+			},
+			"pl_prm_end_date": {
+				"type": "string",
+				"defaultValue": "2027-01-01"
+			}
+		},
+		"annotations": []
+	}
+}
