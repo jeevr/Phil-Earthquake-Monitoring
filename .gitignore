@@ -13,7 +13,7 @@ Web Scraper/logs/*
 !Web Scraper/logs/.gitkeep
 Web Scraper/scraped_data/*
 !Web Scraper/scraped_data/.gitkeep
-Data Processing/
+DataProcessing/
 
 # documents/
 assets/
